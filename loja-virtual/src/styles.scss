@@ -13,3 +13,29 @@ body {
   color: var(--cor-preto);
   font-family: var(--fonte-texto);
 }
+
+.mensagem-feedback {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.65rem;
+  margin-bottom: 1.25rem;
+  padding: 0.85rem 1rem;
+  border-left: 4px solid var(--cor-preto);
+  border-radius: 4px;
+  background-color: rgba(26, 26, 26, 0.08);
+  color: var(--cor-preto);
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.mensagem-feedback.sucesso {
+  border-left-color: #286b3d;
+  background-color: rgba(40, 107, 61, 0.12);
+  color: #1d542f;
+}
+
+.mensagem-feedback.erro {
+  border-left-color: var(--cor-vermelho);
+  background-color: rgba(92, 10, 10, 0.1);
+  color: var(--cor-vermelho);
+}

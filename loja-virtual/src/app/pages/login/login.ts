@@ -14,6 +14,14 @@ export class Login {
   private router = inject(Router);
   private authService = inject(AuthService);
   erroLogin = false;
+  mensagem = '';
+  tipoMensagem: 'sucesso' | 'erro' = 'erro';
+
+  constructor() {
+    if (this.authService.estaLogado()) {
+      this.router.navigate(['/vitrine']);
+    }
+  }
 
   form = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
@@ -22,21 +30,28 @@ export class Login {
 
   entrar(): void {
     if (this.form.valid) {
-      const loginValido = this.authService.validarLogin(
+      this.authService.entrar(
         this.form.controls.email.value ?? '',
         this.form.controls.senha.value ?? ''
-      );
-
-      if (loginValido) {
-        this.erroLogin = false;
-        alert('Login realizado com sucesso!');
-        this.router.navigate(['/vitrine']);
-      } else {
-        this.erroLogin = true;
-      }
+      ).subscribe({
+        next: () => {
+          this.erroLogin = false;
+          this.mostrarMensagem('Login realizado com sucesso!', 'sucesso');
+          setTimeout(() => this.router.navigate(['/vitrine']), 800);
+        },
+        error: () => {
+          this.mostrarMensagem('Email ou senha incorretos.', 'erro');
+          this.erroLogin = true;
+        }
+      });
     } else {
       this.erroLogin = false;
       this.form.markAllAsTouched();
     }
+  }
+
+  private mostrarMensagem(texto: string, tipo: 'sucesso' | 'erro'): void {
+    this.mensagem = texto;
+    this.tipoMensagem = tipo;
   }
 }

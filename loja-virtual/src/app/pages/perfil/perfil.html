@@ -1,0 +1,41 @@
+<main class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-7">
+      <div class="card shadow-sm border-0 perfil-card">
+        <div class="card-body p-4 p-md-5">
+          <div class="d-flex align-items-center justify-content-between mb-4">
+            <div>
+              <p class="eyebrow mb-1">MINHA CONTA</p>
+              <h1 class="mb-0">Perfil do usuário</h1>
+            </div>
+            <i class="bi bi-person-circle perfil-icone" aria-hidden="true"></i>
+          </div>
+
+          <div class="row g-4">
+            <div class="col-md-6">
+              <label class="form-label text-uppercase small text-muted">Nome</label>
+              <p class="perfil-dado mb-0">{{ usuario?.nome }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-uppercase small text-muted">E-mail</label>
+              <p class="perfil-dado mb-0">{{ usuario?.email }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-uppercase small text-muted">CPF</label>
+              <p class="perfil-dado mb-0">{{ usuario?.cpf }}</p>
+            </div>
+            <div class="col-md-6">
+              <label class="form-label text-uppercase small text-muted">Telefone</label>
+              <p class="perfil-dado mb-0">{{ usuario?.telefone }}</p>
+            </div>
+          </div>
+
+          <div class="d-flex flex-wrap gap-3 mt-4">
+            <button type="button" class="btn btn-danger" (click)="sair()">Sair da conta</button>
+            <a routerLink="/vitrine" class="btn btn-outline-dark">Continuar comprando</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>

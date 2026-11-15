@@ -1,13 +1,15 @@
-import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { Injectable, Optional } from '@angular/core';
+import { Observable, catchError, of } from 'rxjs';
 import { Produto } from './models/produto';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ProdutoService {
+  constructor(@Optional() private readonly http: HttpClient | null = null) {}
 
-  private produtos: Produto[] = [
+  static readonly PRODUTOS_INICIAIS: Produto[] = [
     { id: 1, nome: 'The Dark Side of the Moon', artista: 'Pink Floyd', preco: 149.90, imagem: 'img/dark-side-of-the-moon.jpg', descricao: 'Edição em vinil 180g, remasterizada.', ano: 1973, regiao: 'Internacional', 
     faixas: ['Speak to Me', 'Breathe (In the Air)', 'On the Run', 'Time', 'The Great Gig in the Sky', 'Money', 'Us and Them', 'Any Colour You Like', 'Brain Damage', 'Eclipse'] },
     { id: 2, nome: 'All Things Must Pass', artista: 'George Harrison', preco: 129.90, imagem: 'img/all-things-must-pass.jpg', descricao: 'Clássico, prensagem nacional.', ano: 1970, regiao: 'Internacional', 
@@ -74,19 +76,36 @@ export class ProdutoService {
     faixas: ['Ando Meio Desligado', 'Quem Tem Medo de Brincar de Amor', 'Ave, Lúcifer', 'Desculpe, Babe', 'Meu Refrigerador Não Funciona', 'Hey Boy', 'Preciso Urgentemente Encontrar um Amigo', 'Chão de Estrelas', 'Jogo de Calçada', 'Haleluia', 'Oh! Mulher Infiel'] },
   ];
 
+  private produtos: Produto[] = ProdutoService.PRODUTOS_INICIAIS;
+
   listarTodos(): Observable<Produto[]> {
-    return of(this.produtos);
+    if (!this.http) return of(this.produtos);
+    return this.http.get<Produto[]>('/api/produtos').pipe(catchError(() => of(this.produtos)));
   }
 
   buscarPorId(id: number): Observable<Produto | undefined> {
-    return of(this.produtos.find(p => p.id === id));
+    if (!this.http) return of(this.produtos.find(p => p.id === id));
+    return this.http.get<Produto>(`/api/produtos/${id}`).pipe(
+      catchError(() => of(this.produtos.find(p => p.id === id)))
+    );
   }
 
   buscarPorNome(termo: string): Observable<Produto[]> {
-    const termoLower = termo.toLowerCase();
-    return of(this.produtos.filter(p =>
-      p.nome.toLowerCase().includes(termoLower) ||
-      p.artista.toLowerCase().includes(termoLower)
-    ));
+    if (!this.http) {
+      const termoLower = termo.toLowerCase();
+      return of(this.produtos.filter(p =>
+        p.nome.toLowerCase().includes(termoLower) ||
+        p.artista.toLowerCase().includes(termoLower)
+      ));
+    }
+    return this.http.get<Produto[]>('/api/produtos', { params: { q: termo } }).pipe(
+      catchError(() => {
+        const termoLower = termo.toLowerCase();
+        return of(this.produtos.filter(p =>
+          p.nome.toLowerCase().includes(termoLower) ||
+          p.artista.toLowerCase().includes(termoLower)
+        ));
+      })
+    );
   }
 }

@@ -7,8 +7,11 @@
         <p class="descricao-login">Entre para continuar descobrindo os discos que fazem sua coleção girar.</p>
 
         <form [formGroup]="form" (ngSubmit)="entrar()" novalidate>
+          @if (mensagem) {
+            <p class="mensagem-feedback {{ tipoMensagem }}" role="status">{{ mensagem }}</p>
+          }
           @if (erroLogin) {
-            <p class="erro-login" role="alert">Email ou senha incorretos.</p>
+            <p class="erro-login" role="alert">Verifique os dados informados.</p>
           }
 
           <div class="campo-formulario">

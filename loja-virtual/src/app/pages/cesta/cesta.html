@@ -1,5 +1,8 @@
 <div class="container py-4">
   <h2 class="titulo-cesta">Cesta</h2>
+  @if (mensagem) {
+    <p class="mensagem-feedback {{ tipoMensagem }}" role="status">{{ mensagem }}</p>
+  }
 
   @if ((itens$ | async)?.length) {
     <table class="tabela-cesta">
